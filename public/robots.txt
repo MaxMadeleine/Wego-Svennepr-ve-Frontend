@@ -1,0 +1,8 @@
+# Robots.txt fil for siden
+# Tillader alle søgemaskine-bots at se hele hjemmesiden
+
+User-agent: *
+Allow: /
+
+# Crawl-delay ( venter 1 sekund mellem requests)
+Crawl-delay: 1
