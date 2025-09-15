@@ -1,83 +1,124 @@
-import { useState, useEffect } from "react"
 import { useFilter } from "../../contexts/FilterContext"
-import { apiService } from "../../services/apiService"
+import { LiaShoppingBagSolid, LiaLuggageCartSolid } from "react-icons/lia";
+import { MdOutlineLuggage } from "react-icons/md";
+
+
 
 export const FilterSideBar = () => {
-    const { 
-            price, 
-            setPrice,
-            isMember,
-            setIsMember,
-            selectedCategories = [],
-            toggleCategory,
+    const {
+            totalSeats,
+            setTotalSeats,
+            selectedPreferences, 
+            togglePreference, 
+            maxSeats,
+            resetAllFilters
          } = useFilter()
 
-    const [categories, setCategories] = useState([])
-    const isCategoryActive = (slug) => selectedCategories.includes(slug);
+    // det var nemmer at skrive dem end at fetche og det er aligevel et statisk input fra usern
+    const bagSizeOptions = [
+      { id: 1, name: 'Lille', icon: <LiaShoppingBagSolid />, value: 1 },
+      { id: 2, name: 'Mellem', icon: <MdOutlineLuggage />, value: 2 },
+      { id: 3, name: 'Stor', icon: <LiaLuggageCartSolid />, value: 3 },
+    ];
 
-    useEffect(() => {
-        const fetchCategoriesAndProducts = async () => {
-            try {
-                const categoriesResponse = await apiService.getCategories()
-                setCategories(categoriesResponse || [])
+    const comfortOptions = [
+      { name: 'Højst to personer på bagsædet', value: 'hasComfort' },
+    ];
 
-                const productsResponse = await apiService.getProducts()
-                setPrice(1500) // startpris til 50
-            } catch (error) {
-                console.error("Fejl ved hentning af data:", error)
-            }
-        }
+    const preferenceOptions = [
+      { name: 'Musik', value: 'allowMusic' },
+      { name: 'Dyr', value: 'allowPets' },
+      { name: 'Børn', value: 'allowChildren' },
+      { name: 'Rygning', value: 'allowSmoking' },
+    ];
 
-        fetchCategoriesAndProducts()
-    }, [setPrice]) // setPrice til dependency array
+    // value fra provider
+    const isPreferenceActive = (value) => selectedPreferences.includes(value);
+
+    const handleResetFilters = () => {
+      resetAllFilters();
+    };
 
     return (
-        <div>
+        <aside className="w-full h-fit lg:w-64 p-4 bg-white rounded-lg shadow-md mb-8 lg:mb-0">
             <div className="mb-5">
-                <label>Pris: {price}</label>
+                <label htmlFor="total-seats-range" className="block text-lg font-medium text-gray-900 dark:text-white">Antal sæder: {totalSeats}</label>
                 <input
+                    id="total-seats-range"
                     type="range"
-                    min="0"
-                    max="10000"
+                    min="1"
+                    max={maxSeats}
                     step="1"
-                    name="price" 
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
+                    name="totalSeats"
+                    value={totalSeats}
+                    // jeg bruger Number da det er en function som bruges til at sikre value er et nummer fra input (e.target.value)
+                    onChange={(e) => setTotalSeats(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 text-secondary rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700"
                 />
             </div>
-            <div className="flex gap-2 mb-5">
-                <input
-                    type="checkbox" 
-                    name="isMember" 
-                    checked={isMember}
-                    value="1" 
-                    onChange={(e) => setIsMember(e.currentTarget.checked)}
-                />
-                <label className={isMember ? 'text-green-400' : 'text-red-500'}>Kun for medlemmer</label>
+
+            <div className="mb-5 border-y py-4 border-gray-200">
+              <h3 className="block text-lg font-medium text-gray-900 dark:text-white mb-2">Bagage</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {bagSizeOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => togglePreference(`bagSizeId_${option.value}`)}
+                    className={`flex flex-col items-center justify-center p-2 rounded-md text-sm transition-colors duration-200 ${isPreferenceActive(`bagSizeId_${option.value}`) ? 'bg-blue-500 text-gray-400' : ' text-gray-900 hover:bg-gray-200'}`}
+                  >
+                    <span className="text-3xl text-gray-400">{option.icon}</span>
+                    {option.name}
+                  </button>
+                ))}
+              </div>
             </div>
+
             <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700">Kategorier:</label>
+                <h3 className="block text-lg font-medium text-gray-900 dark:text-white mb-2">Komfort</h3>
                 <div className="mt-2 space-y-2">
-                  {/* hvis cat lenght er over 0 show else  */}
-                    {categories.length > 0 ? (
-                        categories.map((category) => (
-                            <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={isCategoryActive(category.slug)}
-                                    onChange={() => toggleCategory(category.slug)}
-                                    className="form-checkbox h-4 w-4 text-primary-600 transition duration-150 ease-in-out rounded focus:ring-primary-500"
-                                />
-                                <span className={`text-sm font-medium ${isCategoryActive(category.slug) ? 'text-primary-700' : 'text-gray-700'}`}>
-                                    {category.name}
-                                </span>
-                            </label>
-                        ))
-                    ) : (
-                        <p className="text-sm text-gray-500">Ingen kategorier fundet.</p>
-                    )}
+                  {comfortOptions.map((option) => (
+                    // value er unikt ud fra vært ver muglighed
+                      <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                              type="checkbox"
+                              checked={isPreferenceActive(option.value)}
+                              onChange={() => togglePreference(option.value)}
+                              className="form-checkbox h-4 w-4 text-primary-600 transition duration-150 ease-in-out rounded focus:ring-primary-500"
+                          />
+                          <span className={`text-sm font-medium ${isPreferenceActive(option.value) ? 'text-primary-700' : 'text-gray-700'}`}>
+                              {option.name}
+                          </span>
+                      </label>
+                  ))}
                 </div>
             </div>
-        </div>
+
+            <div className="mb-5 border-y py-4 border-gray-200">
+                <h3 className="block text-lg font-medium text-gray-900 dark:text-white mb-2">Præferencer</h3>
+                <div className="mt-2 space-y-2">
+                  {preferenceOptions.map((option) => (
+                     // value er unikt ud fra vært ver muglighed
+                      <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                              type="checkbox"
+                              checked={isPreferenceActive(option.value)}
+                              onChange={() => togglePreference(option.value)}
+                              className="form-checkbox h-4 w-4 text-primary-600 transition duration-150 ease-in-out rounded focus:ring-primary-500"
+                          />
+                          <span className={`text-sm font-medium ${isPreferenceActive(option.value) ? 'text-primary-700' : 'text-gray-700'}`}>
+                              {option.name}
+                          </span>
+                      </label>
+                  ))}
+                </div>
+            </div>
+
+            <button
+              onClick={handleResetFilters}
+              className="w-full bg-secondary text-white text-xl py-4 px-4 font-semibold rounded-full hover:bg-primary transition-colors duration-200"
+            >
+              Nulstil
+            </button>
+        </aside>
     )
 }

@@ -1,11 +1,14 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
+
+//TODO SKAL LAVES
+
 export const ProfilePage = () => {
   const location = useLocation(); 
 
   return (
-    <section className="min-h-screen mt-20">
+    <section className="min-h-screen mt-40">
       <nav className="flex flex-wrap justify-center bg-white dark:bg-gray-900 shadow-md mb-8">
         <Link
           className={`py-3 px-6 text-center text-lg font-medium transition-colors duration-200 border-b-2 ${

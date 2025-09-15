@@ -1,73 +1,78 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MessageCircle, Send, User, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/apiService';
 import toast from 'react-hot-toast';
 
-export const ProductComments = ({ product }) => {
+
+//! TODO KOMMENTARE SKAL LAVES DER ER BARE TAGET ET SNIPPET
+//TODO
+
+
+export const ProductComments = ({ productId, productName }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
+  const [showCommentForm, setShowCommentForm] = useState(false);
   const [loading, setLoading] = useState(true);
   
   const { isAuthenticated, user } = useAuth();
 
-  const fetchComments = useCallback(async () => {
+  // Fetch comments når component mounts
+  useEffect(() => {
+    fetchComments();
+  }, [productId]);
+
+  const fetchComments = async () => {
     try {
       setLoading(true);
-      const reviews = await apiService.getReviewsByProduct(product.slug);      
-      const mappedComments = reviews.map((review) => ({
-        id: review.id,
-        comment: review.comment,
-        userId: review.userId,
-        createdAt: new Date().toISOString(), // Siden backend ikke har createdAt, bruger jeg tid nu
-        user: {
-          name: review.user?.firstname || 'Anonym bruger'
-        }
-      }));
+      const reviews = await apiService.getReviewsByProduct(productId);
       
-      setComments(mappedComments);
+      // Filter out reviews that are just ratings (have meaningful comments)
+      const meaningfulComments = reviews.filter(review => 
+        review.comment && 
+        review.comment.trim() !== '' && 
+        !review.comment.startsWith('Rated ') // Filter out auto-generated rating comments
+      );
+      
+      setComments(meaningfulComments);
     } catch (error) {
-      console.error('Fejl ved hentning af kommentare:', error);
-      setComments([]);
+      console.error('Error fetching comments:', error);
     } finally {
       setLoading(false);
     }
-  }, [product?.slug]); 
-
-  // breaker så den ikke køre i loop
-  
-  useEffect(() => {
-    if (product?.slug) {
-      fetchComments();
-    }
-  }, [product?.slug, fetchComments]);
+  };
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     
-    if (!isAuthenticated) {
-      toast.error('Du skal være logget ind for at skrive en kommentar');
+    if (!newComment.trim()) {
+      toast.error('Kommentar kan ikke være tom');
       return;
     }
-    
+
     try {
       setSubmittingComment(true);
       
       const reviewData = {
+        // Set a clear title for comments. If the user provided a title, use it, otherwise use a default.
+        title: newComment.substring(0, 50), // Use first 50 chars of comment as title if no explicit title for review
         comment: newComment.trim(),
-        productId: product.id // giver comment og product id til backend 
+        numStars: 5, // Default rating for comments, as the backend requires it
+        productId: parseInt(productId),
+        isActive: true
       };
 
       await apiService.createReview(reviewData);
       toast.success('Kommentar tilføjet!');
-
-      // Opdater kommentarer
+      
       setNewComment('');
+      setShowCommentForm(false);
+      
+      // Refresh comments
       await fetchComments();
     } catch (error) {
-      console.error('Kunne ikke tilføje kommentar:', error);
+      console.error('Error submitting comment:', error);
       toast.error('Kunne ikke tilføje kommentar');
     } finally {
       setSubmittingComment(false);
@@ -77,28 +82,11 @@ export const ProductComments = ({ product }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('da-DK', {
-      day: '2-digit',
-      month: '2-digit',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      month: 'long',
+      day: 'numeric'
     });
   };
-
-  const handleDeleteComment = async (commentId) => {
-    if (!confirm('Er du sikker på at du vil slette denne kommentar?')) return;
-    
-    try {
-      await apiService.deleteReview(commentId);
-      setComments(prev => prev.filter(comment => comment.id !== commentId));
-      toast.success('Kommentar slettet');
-    } catch (error) {
-      console.error('Fejl ved sletning af kommentar:', error);
-      toast.error('Kunne ikke slette kommentar');
-    }
-  };
-
-
 
   if (loading) {
     return (
@@ -115,89 +103,122 @@ export const ProductComments = ({ product }) => {
   }
 
   return (
-    <section className='mb-10'>
-      {/* Besked input felt */}
-        <div className="flex mb-6 ">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Skriv en besked til sælger......"
-            className="flex-1 px-4 py-3 border-2 border-secondary focus:ring-secondary placeholder:text-gray-900 placeholder:text-lg text-xl"
-            rows={6}
-            disabled={!isAuthenticated || submittingComment}
-          />
-       
+    <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <header className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <MessageCircle className="w-5 h-5 text-gray-600 mr-2" />
+          <h3 className="text-lg font-semibold text-gray-900">
+            Kommentarer ({comments.length})
+          </h3>
         </div>
-        <button
-            onClick={handleCommentSubmit}
-            disabled={!isAuthenticated || !newComment.trim() || submittingComment}
-            className="bg-secondary hover:bg-primary text-white px-9 py-2.5 mb-5 flex ml-auto "
+        
+        {isAuthenticated && (
+          <button
+            onClick={() => setShowCommentForm(!showCommentForm)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
           >
-            {submittingComment ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-            ) : (
-              'Send'
-            )}
+            {showCommentForm ? 'Annuller' : 'Skriv kommentar'}
           </button>
+        )}
+      </header>
 
-      {/* Login prompt hvis ikke logget ind */}
+      {/* Comment Form */}
+      {showCommentForm && isAuthenticated && (
+        <form onSubmit={handleCommentSubmit} className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-4">
+            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+              Din kommentar
+            </label>
+            <textarea
+              id="comment"
+              rows={4}
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Skriv din kommentar her..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              disabled={submittingComment}
+            />
+          </div>
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={() => {
+                setShowCommentForm(false);
+                setNewComment('');
+              }}
+              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200"
+              disabled={submittingComment}
+            >
+              Annuller
+            </button>
+            <button
+              type="submit"
+              disabled={submittingComment || !newComment.trim()}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            >
+              {submittingComment ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Sender...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Send kommentar
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Not logged in message */}
       {!isAuthenticated && (
-        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 ">
-          <p className="text-yellow-800 text-center">
-            Du skal være logget ind for at sende en besked. 
-            <Link to="/login" className="text-secondary hover:text-primary font-medium ml-1">
-              Log ind her
-            </Link>
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-700 text-center">
+            Log ind for at skrive en kommentar
           </p>
         </div>
       )}
 
-      {/* Kommentarer */}
+      {/* Comments List */}
       <div className="space-y-4">
         {comments.length === 0 ? (
           <div className="text-center py-8">
             <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Ingen beskeder endnu</p>
+            <p className="text-gray-500">Ingen kommentarer endnu</p>
             <p className="text-sm text-gray-400 mt-1">
-              Vær den første til at kontakte sælgeren
+              Vær den første til at dele dine tanker om dette produkt
             </p>
           </div>
         ) : (
-          comments.map((comment) => {
-            const ownComment = comment.userId === user?.id;
-            const isSellerComment = comment.userId === product?.userId;
-            
-            return (
-              <div key={comment.id} className={`flex ${isSellerComment ? 'justify-start' : 'justify-end'}`}>
-                <div className={`max-w-md ${isSellerComment ? 'mr-auto' : 'ml-auto'}`}>
-                    <div className={`flex items-center mb-1 ${isSellerComment ? 'justify-start' : 'justify-end'}`}>
-                      <div className={`flex items-baseline ${isSellerComment ? 'justify-start' : 'justify-end'}`}>
-                        <span className="font-light text-md text-gray-500">
-                          {isSellerComment 
-                            ? `${comment.user?.name || 'Sælger'} (sælger)` 
-                            : comment.user?.name || 'Anonym bruger'
-                          } 
-                        </span> 
-                        <span className={` ml-1 text-xs text-gray-500 ${isSellerComment ? 'ml-2' : 'mr-2'}`}>
-                           d. {formatDate(comment.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-sm bg-white border-2 border-secondary/50 p-3">{comment.comment}</p>
-                    <div className={`${isSellerComment ? 'text-left' : 'text-right'}`}>
-                      {ownComment && (
-                        <button
-                          onClick={() => handleDeleteComment(comment.id)}
-                          className="text-xs font-light text-red-600 hover:text-red-800 "
-                        >
-                          slet kommentar
-                        </button>
-                      )}
+          comments.map((comment) => (
+            <article key={comment.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors duration-200">
+              <header className="flex items-start justify-between mb-3">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                    <User className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      {comment.user?.name || 'Anonym bruger'}
+                    </h4>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {formatDate(comment.createdAt)}
                     </div>
                   </div>
                 </div>
-            );
-          })
+              </header>
+              
+              <div className="ml-11">
+                {comment.title && comment.title !== newComment.substring(0, 50) && (
+                  <h5 className="font-medium text-gray-900 mb-2">{comment.title}</h5>
+                )}
+                <p className="text-gray-700 leading-relaxed">{comment.comment}</p>
+              </div>
+            </article>
+          ))
         )}
       </div>
     </section>

@@ -1,66 +1,83 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiService } from "../services/apiService";
 
 const FilterContext = createContext();
 
 export const FilterContextProvider = ({ children }) => {
-    const [price, setPrice] = useState(15);
-    const [isMember, setIsMember] = useState(false);
-    const [maxPrice, setMaxPrice] = useState(1000);
-    const [selectedCategories, setSelectedCategories] = useState([]);
+  const [totalSeats, setTotalSeats] = useState(1); 
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [maxSeats, setMaxSeats] = useState(1); 
+  const [fromLocation, setFromLocation] = useState(""); // State for afgangslokation
+  const [toLocation, setToLocation] = useState(""); // State for destinationslokation
 
-    // Funktion til at tilføje eller fjerne en kategori fra de valgte kategorier
-    const toggleCategory = (categorySlug) => {
-        setSelectedCategories((prevCategories) => {
-            // Hvis kategorien allerede er valgt, fjernes den
-            if (prevCategories.includes(categorySlug)) {
-                return prevCategories.filter((slug) => slug !== categorySlug);
-            } else {
-                // Hvis kategorien ikke er valgt, tilføjes den
-                return [...prevCategories, categorySlug];
-            }
-        });
+  // useEffect til at hente antal sæder fra alle trips ved render
+  useEffect(() => {
+    const fetchMaxSeats = async () => {
+      try {
+        const allTrips = await apiService.getTrips();
+        // Hvis der findes ture, beregnes det maksimale antal sæder
+        if (allTrips && allTrips.length > 0) {
+          const maxSeatsValue = Math.max(...allTrips.map(trip => trip.seatsTotal));
+          // Opdaterer tilstanden med det maksimale antal sæder
+          setMaxSeats(maxSeatsValue);
+          setTotalSeats(maxSeatsValue); // værdi for slideren til max
+        }
+      } catch (error) {
+        console.error("Error fetching max seats:", error);
+      }
     };
+    fetchMaxSeats();
+  }, []); 
 
-    useEffect(() => {
-        const fetchMaxPrice = async () => {
-            try {
-                const products = await apiService.getProducts();
-                if (products && products.length > 0) {
-                    // Finder den højeste pris blandt produkterne
-                    const highestPrice = Math.max(...products.map(p => Number(p.price)), 0);
-                    setMaxPrice(highestPrice); // Opdaterer maxPrice med den højeste pris
-                    setPrice(highestPrice); // Sætter den initiale pris til maxPrice
-                }
-            } catch (error) {
-                console.error("Fejl ved hentning af produkter for max pris:", error);
-            }
-        };
-        fetchMaxPrice(); // Kører funktionen én gang, når komponenten mountes
-    }, []); // Tom dependency array så den kører en gang
-
-    return (
-        <FilterContext.Provider value={{
-            // Gør state og funktioner tilgængelige
-            price,
-            setPrice,
-            isMember,
-            setIsMember,
-            maxPrice,
-            setMaxPrice,
-            selectedCategories,
-            setSelectedCategories,
-            toggleCategory,
-        }}>
-            {children}
-        </FilterContext.Provider>
+  //for at tilføje eller fjerne en præference fra listen
+  const togglePreference = (preferenceName) => { 
+    setSelectedPreferences((prev) =>
+      // Hvis præferencen allerede findes i listen, fjernes den
+      prev.includes(preferenceName)
+        ? prev.filter((name) => name !== preferenceName)
+        // Hvis præferencen ikke findes i listen, tilføjes den
+        : [...prev, preferenceName]
     );
+  };
+
+  const resetPreferences = () => {
+    setSelectedPreferences([]);
+  };
+  
+  const resetLocationFilters = () => { 
+    setFromLocation("");
+    setToLocation("");
+  };
+
+  const resetAllFilters = () => { 
+    setTotalSeats(maxSeats); // til max ledige sæder
+    setSelectedPreferences([]);
+    setFromLocation("");
+    setToLocation("");
+  };
+
+  const contextValue = {
+    totalSeats,
+    setTotalSeats,
+    selectedPreferences,
+    togglePreference,
+    maxSeats,
+    resetPreferences,
+    fromLocation,
+    setFromLocation,
+    toLocation,
+    setToLocation,
+    resetLocationFilters,
+    resetAllFilters,
+  };
+
+  return (
+    <FilterContext.Provider value={contextValue}>
+      {children}
+    </FilterContext.Provider>
+  );
 };
 
-// Custom hook til at bruge FilterContext
-export const useFilter = () => {
-    const ctx = useContext(FilterContext);
-    // Smider en fejl, hvis hooket bruges uden for en FilterContextProvider
-    if (!ctx) throw new Error("useFilter skal bruges inden for <FilterProvider>");
-    return ctx;
+export const useFilter = () => { // hook til filtercontext
+  return useContext(FilterContext);
 };

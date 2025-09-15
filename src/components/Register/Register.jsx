@@ -1,26 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { Check } from "lucide-react";
-import { DonationSection } from "../DonationSection/DonationSection";
 
 export const Register = () => {
-  // Form-data med alle felter fra billedet
+  // Form-data
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    firstname: "",
-    lastname: "",
-    address: "",
-    city: "",
-    zipcode: "",
+    description: "",
   });
 
-  // Terms checkbox state
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-
-  // Errors fra validering og register auth-funktioner fra context
+  // Errors fejl fra validering og register auth-funktioner fra context
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { register, error, clearError } = useAuth();
@@ -50,6 +42,10 @@ export const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    if (!formData.name.trim()) {
+      newErrors.name = "Navn er påkrævet";
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = "Email er påkrævet";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -58,7 +54,7 @@ export const Register = () => {
 
     if (!formData.password) {
       newErrors.password = "Adgangskode er påkrævet";
-    } else if (formData.password.length < 4) {
+    } else if (formData.password.length < 6) {
       newErrors.password = "Adgangskode skal være mindst 6 tegn";
     }
 
@@ -66,32 +62,6 @@ export const Register = () => {
       newErrors.confirmPassword = "Bekræft venligst din adgangskode";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Adgangskoder matcher ikke";
-    }
-
-    if (!formData.firstname.trim()) {
-      newErrors.firstname = "Fornavn er påkrævet";
-    }
-
-    if (!formData.lastname.trim()) {
-      newErrors.lastname = "Efternavn er påkrævet";
-    }
-
-    if (!formData.address.trim()) {
-      newErrors.address = "Adresse er påkrævet";
-    }
-
-    if (!formData.city.trim()) {
-      newErrors.city = "By er påkrævet";
-    }
-
-    if (!formData.zipcode.trim()) {
-      newErrors.zipcode = "Postnummer er påkrævet";
-    } else if (!/^\d{4}$/.test(formData.zipcode)) {
-      newErrors.zipcode = "Postnummer skal være 4 cifre";
-    }
-
-    if (!acceptedTerms) {
-      newErrors.terms = "Du skal acceptere betingelserne";
     }
 
     setErrors(newErrors);
@@ -109,17 +79,13 @@ export const Register = () => {
     setIsLoading(true);
 
     try {
-      // Data til backend - matcher præcis det backend forventer
+      // Data til backend
       const userData = {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        address: formData.address,
-        zipcode: parseInt(formData.zipcode),
-        city: formData.city,
+        name: formData.name,
         email: formData.email,
         password: formData.password,
-        hasNewsletter: false,
-        hasNotification: false,
+        description: formData.description || "",
+        image: "",
         refreshToken: "",
         isActive: true,
       };
@@ -136,288 +102,180 @@ export const Register = () => {
   };
 
   return (
-    <>
-      <section className="min-h-screen flex items-center justify-center p-5">
-        <article className="p-10 w-full max-w-4xl mx-auto">
-          <h2 className="text-5xl font-light text-gray-900 mb-2 text-center">
-            Opret en konto
-          </h2>
+    <div className="min-h-screen flex items-center justify-center bg-white-500 p-5">
+      <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-md animate-fade-in">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+          Opret konto
+        </h2>
+        <p className="text-gray-600 text-center mb-8">Tilslut dig i dag</p>
 
-          {error && (
-            <div className=" border border-red-600 text-red-600 px-4 py-3 mb-6">
-              {error}
-            </div>
-          )}
+        {/* Viser auth-fejl */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                autoComplete="email"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Din email....."
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.email}
-                </span>
-              )}
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Fuldt navn
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              autoComplete="name"
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                errors.name
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 focus:border-blue-500"
+              }`}
+              placeholder="Indtast dit fulde navn"
+              disabled={isLoading}
+            />
+            {errors.name && (
+              <span className="text-red-600 text-sm mt-1">{errors.name}</span>
+            )}
+          </div>
 
-            {/* Password og confirm */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="new-password"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Dit password......"
-                disabled={isLoading}
-              />
-              {errors.password && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.password}
-                </span>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                errors.email
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 focus:border-blue-500"
+              }`}
+              placeholder="Indtast din email"
+              disabled={isLoading}
+            />
+            {errors.email && (
+              <span className="text-red-600 text-sm mt-1">{errors.email}</span>
+            )}
+          </div>
 
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Bekræft password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                autoComplete="new-password"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Gentag dit password......"
-                disabled={isLoading}
-              />
-              {errors.confirmPassword && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.confirmPassword}
-                </span>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Adgangskode
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                errors.password
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 focus:border-blue-500"
+              }`}
+              placeholder="Indtast din adgangskode"
+              disabled={isLoading}
+            />
+            {errors.password && (
+              <span className="text-red-600 text-sm mt-1">
+                {errors.password}
+              </span>
+            )}
+          </div>
 
-            {/* Fornavn */}
-            <div>
-              <label
-                htmlFor="firstname"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Fornavn
-              </label>
-              <input
-                type="text"
-                id="firstname"
-                name="firstname"
-                value={formData.firstname}
-                onChange={handleChange}
-                autoComplete="given-name"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Dit fornavn......."
-                disabled={isLoading}
-              />
-              {errors.firstname && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.firstname}
-                </span>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Bekræft adgangskode
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                errors.confirmPassword
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 focus:border-blue-500"
+              }`}
+              placeholder="Gentag din adgangskode"
+              disabled={isLoading}
+            />
+            {errors.confirmPassword && (
+              <span className="text-red-600 text-sm mt-1">
+                {errors.confirmPassword}
+              </span>
+            )}
+          </div>
 
-            {/* Efternavn */}
-            <div>
-              <label
-                htmlFor="lastname"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Efternavn
-              </label>
-              <input
-                type="text"
-                id="lastname"
-                name="lastname"
-                value={formData.lastname}
-                onChange={handleChange}
-                autoComplete="family-name"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Dit efternavn......"
-                disabled={isLoading}
-              />
-              {errors.lastname && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.lastname}
-                </span>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Beskrivelse (valgfrit)
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Fortæl os om dig selv"
+              disabled={isLoading}
+              rows="3"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
+            />
+          </div>
 
-            {/* Adresse */}
-            <div>
-              <label
-                htmlFor="address"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Adresse
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                autoComplete="street-address"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Din adresse......"
-                disabled={isLoading}
-              />
-              {errors.address && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.address}
-                </span>
-              )}
-            </div>
-
-            {/* By */}
-            <div>
-              <label
-                htmlFor="city"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                By
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                autoComplete="address-level2"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Din by......"
-                disabled={isLoading}
-              />
-              {errors.city && (
-                <span className="text-red-600 text-sm mt-1">{errors.city}</span>
-              )}
-            </div>
-
-            {/* Postnummer */}
-            <div>
-              <label
-                htmlFor="zipcode"
-                className="block text-lg font-normal text-foreground mb-2"
-              >
-                Postnummer
-              </label>
-              <input
-                type="text"
-                id="zipcode"
-                name="zipcode"
-                value={formData.zipcode}
-                onChange={handleChange}
-                autoComplete="postal-code"
-                className="w-full px-4 py-3 bg-muted border-2 border-secondary/70 focus:outline-none focus:border-secondary transition-all "
-                placeholder="Dit postnummer......"
-                disabled={isLoading}
-              />
-              {errors.zipcode && (
-                <span className="text-red-600 text-sm mt-1">
-                  {errors.zipcode}
-                </span>
-              )}
-            </div>
-
-            <p className="text-gray-600 my-20">
-              Har du allerede en konto hos os?{" "}
-              <Link
-                to="/login"
-                className="text-primary font-medium hover:text-green-800 transition-colors underline"
-              >
-                Klik her
-              </Link>{" "}
-              for at vende tilbage til login
-            </p>
-
-            {/* Terms  */}
-            <div className="flex items-start justify-between space-x-4 mt-20">
-              <div className="flex items-start space-x-12 flex-1">
-                <button
-                  type="button"
-                  onClick={() => setAcceptedTerms(!acceptedTerms)}
-                  className={`mt-1 p-1 border-2 transition-all ${
-                    acceptedTerms
-                      ? "border-secondary bg-secondary text-white"
-                      : "border-secondary bg-white text-transparent"
-                  }`}
-                >
-                  <Check size={12} />
-                </button>
-                <div className="text-sm text-gray-600">
-                  <label className="cursor-pointer">
-                    Jeg har læst og forstået{" "}
-                    <Link
-                      to="/register"
-                      className="text-green-600 hover:text-green-700 underline"
-                    >
-                      de gældende betingelser
-                    </Link>{" "}
-                    for oprettelse af kundekonto og brug af denne side
-                  </label>
-                  {errors.terms && (
-                    <span className="text-red-600 text-sm block mt-1">
-                      {errors.terms}
-                    </span>
-                  )}
-                </div>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-l from-black to-grey-700 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Opretter konto...
               </div>
+            ) : (
+              "Opret konto"
+            )}
+          </button>
+        </form>
 
-              <button
-                type="submit"
-                className="bg-secondary hover:bg-secondary/90 text-white text-xl font-light py-2 px-10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Opretter...
-                  </div>
-                ) : (
-                  "Opret"
-                )}
-              </button>
-            </div>
-          </form>
-        </article>
-      </section>
-      <DonationSection />
-    </>
+        <div className="mt-8 text-center">
+          <p className="text-gray-600">
+            Har du allerede en konto?{" "}
+            <Link
+              to="/login"
+              className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
+            >
+              Log ind
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };

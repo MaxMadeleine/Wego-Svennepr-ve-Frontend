@@ -59,7 +59,7 @@ export const NotFoundPage = () => {
 
           <Link
             to="/"
-            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground dark:text-primary-foreground-dark font-semibold rounded-lg shadow-lg hover:bg-primary-dark transform hover:scale-105 transition-all duration-200"
+            className="inline-flex items-center px-6 py-3 text-white bg-secondary text-primary-foreground dark:text-primary-foreground-dark font-semibold rounded-lg shadow-lg hover:bg-primary-dark transform hover:scale-105 transition-all duration-200"
           >
             <svg 
               className="w-5 h-5 mr-2" 
@@ -80,7 +80,7 @@ export const NotFoundPage = () => {
 
         <div className="mt-12 p-4 bg-muted dark:bg-muted-dark backdrop-blur-sm rounded-lg border border-border dark:border-border-dark">
           <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark">
-            💡 <strong className="text-foreground dark:text-foreground-dark">Ligegyldig Fakta:</strong> HTTP 404 fejl var navngivet efter rum 404 på CERN, der hvor the World Wide Web var opfundet!
+             <strong className="text-foreground dark:text-foreground-dark"> Ligegyldig Fakta:</strong> HTTP 404 fejl var navngivet efter rum 404 på CERN, der hvor the World Wide Web var opfundet!
           </p>
         </div>
       </div>

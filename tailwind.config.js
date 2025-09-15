@@ -14,15 +14,15 @@ export default {
 		  sans: ['Roboto', 'sans-serif']
 		},
 		colors: {
-		  primary: '#00A676',
-		  secondary: '#1D8439',
-		  accent: '#952E0D',
-		  muted: '#F5F5F5',
-		  background: '#FFFFFF',
-		  foreground: '#000000',
-		  like: '#ED1C24',
-		  
-		}
+			primary: '#09366D',
+			secondary: '#00A6DB',
+			no: '#E15E60',
+			yes: '#009933',
+			fav: '#F3CC0B',
+			muted: '#F3F4F4',
+			background: '#FFFFFF',
+			foreground: '#000000',
+		  }
 	  }
 	},
 	plugins: [import("tailwindcss-animate")],

@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import bannerImage1 from '../../assets/images/banners/banner_image1.jpg';
-import bannerImage2 from '../../assets/images/banners/banner_image2.jpg';
-import bannerImage3 from '../../assets/images/banners/banner_image3.jpg';
+import { apiService } from '../../services/apiService';
+
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.VITE_API_URL;
 
 export const BackgroundGallery = ({ isContained = false }) => {
-  // slide fra from assets, da det er bedre til serverhosting
-  const [slides] = useState([
-    {
-      id: 1,
-      imageUrl: bannerImage1,
-      orderNum: 1,
-      title: 'Velkommen til Den Grønne Afvis'
-    },
-    {
-      id: 2,
-      imageUrl: bannerImage2,
-      orderNum: 2,
-      title: 'Velkommen til Den Grønne Afvis'
-    },
-    {
-      id: 3,
-      imageUrl: bannerImage3,
-      orderNum: 3,
-      title: 'Velkommen til Den Grønne Afvis'
-    }
-  ]);
-
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [loading, setLoading] = useState(false); // vi loader ikke fra api
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true); // Initialiser loading til true, da vi henter data fra API'en
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const data = await apiService.getSlides();
+        setSlides(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []); // kører kun én gang ved mount
+
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  useEffect(() => {
+    if (loading || slides.length === 0) {
+      return;
+    }
     // Tjekker før intervallet oprettes
     if (slides.length > 1) {
-      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 8. sekund
+      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 7. sekund
       const interval = setInterval(() => {
         // Skifter til næste slide. Hvis det er den sidste slide, går den tilbage til den første
         setCurrentSlideIndex((prevIndex) =>
@@ -44,7 +43,7 @@ export const BackgroundGallery = ({ isContained = false }) => {
       // Rydder intervallet, når komponenten afmonteres eller slides.length ændres
       return () => clearInterval(interval);
     }
-  }, [slides.length]); // kører igen når antallet af slides ændres
+  }, [slides.length, loading]); // kører igen når antallet af slides ændres eller loading-tilstand ændres
 
   if (loading) {
     return (
@@ -54,9 +53,17 @@ export const BackgroundGallery = ({ isContained = false }) => {
     );
   }
 
+  if (error) {
+    return (
+      <span className={`${isContained ? 'absolute' : 'fixed'} inset-0 bg-red-900 flex items-center justify-center z-0 text-white`}>
+        Fejl ved indlæsning af billeder: {error.message}
+      </span>
+    );
+  }
+
   return (
     <figure className={`${isContained ? 'absolute' : 'fixed'} inset-0 z-0`}>
-      <Link to="/forside" className="absolute inset-0 z-10 cursor-pointer">
+      <Link to="/find-lift" className="absolute inset-0 z-10 cursor-pointer">
         {slides.map((slide, index) => (
           <div
             key={slide.id || index}
@@ -68,22 +75,20 @@ export const BackgroundGallery = ({ isContained = false }) => {
             }}
           >
             <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+            <figcaption className='absolute inset-0 flex flex-col items-center justify-center text-white z-40'>
+          <h1 className='text-6xl text-center font-medium'>{slide.text}</h1>
+        </figcaption>
           </div>
         ))}
         
-        <figcaption className='absolute inset-0 flex flex-col items-center justify-center text-white z-20'>
-          <h1 className='text-6xl text-center font-medium'>Velkommen til Den Grønne Afvis</h1>
-          <br />
-          <p className='text-2xl font-light'>Vi går forest i kampen om klimaet ved at give 2 kr. til</p>
-          <p className='text-2xl font-light'> klima-venlige formål, hver gang du handler brugt på Den</p>
-          <p className='text-2xl font-light'> Grønne Avis</p>
-        </figcaption>
+      
       </Link>
 
       {slides.length > 1 && (
+        // jeg har dem til eventuel tilvalg men de gemmer sig bag footer XD
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-50 cursor-pointer">
           {slides.map((_, index) => (
-            // værdien er ligegyldig så jeg bruger underscore :)
+            // værdien er ligegyldig så jeg bruger underscore 
             <button
               key={index}
               onClick={(e) => {

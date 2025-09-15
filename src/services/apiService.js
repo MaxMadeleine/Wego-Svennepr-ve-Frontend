@@ -34,91 +34,71 @@ const apiFetch = async (endpoint, options = {}) => {
   return handleResponse(response); 
 };
 
-// API CRUD for produkter
+// API CRUD for trips
 export const apiService = {
-  // Produkt
-  async getProducts() {
-    return apiFetch('/api/products');
+  // Trip
+  async getTrips() {
+    return apiFetch('/api/trips');
   },
 
-  async getProduct(slug) {
-    return apiFetch(`/api/products/${slug}`);
+  async getTrip(id) {
+    return apiFetch(`/api/trips/${id}`);
   },
 
-  async getProductsByCategory(slug) {
-    return apiFetch(`/api/products/category/${slug}`);
-  },
-
-  async createProduct(productData) {
-    return apiFetch('/api/products', {
+  async createTrip(tripData) {
+    return apiFetch('/api/trips', {
       method: 'POST',
-      body: JSON.stringify(productData),
+      body: JSON.stringify(tripData),
     });
   },
 
-  async updateProduct(id, productData) {
-    return apiFetch(`/api/products/${id}`, {
+  async updateTrip(id, tripData) {
+    return apiFetch(`/api/trips/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(productData),
+      body: JSON.stringify(tripData),
     });
   },
 
-  async deleteProduct(id) {
-    return apiFetch(`/api/products/${id}`, {
+  async deleteTrip(id) {
+    return apiFetch(`/api/trips/${id}`, {
       method: 'DELETE',
     });
   },
 
-  async getUserProducts(userId) {
-    return apiFetch(`/api/products/user/${userId}`);
+  async getUserTrips(userId) {
+    return apiFetch(`/api/users/${userId}/trips`);
   },
 
-  // Kategori
-  async getCategories() {
-    return apiFetch('/api/categories');
-  },
-
-  async getCategory(id) {
-    return apiFetch(`/api/categories/${id}`);
-  },
 
   // Anmeldelse
   async getReviews() {
-    return apiFetch('/api/comments');
+    return apiFetch('/api/reviews');
   },
 
-  async getReviewsByProduct(productId) {
-    return apiFetch(`/api/comments/${productId}`);
+  async getReviewsByTrip(tripId) {
+    return apiFetch(`/api/reviews/trip/${tripId}`);
   },
 
   async createReview(reviewData) {
-    return apiFetch('/api/comments', {
+    return apiFetch('/api/reviews', {
       method: 'POST',
       body: JSON.stringify(reviewData),
     });
   },
 
   async updateReview(id, reviewData) {
-    return apiFetch(`/api/comments/${id}`, {
+    return apiFetch(`/api/reviews/${id}`, {
       method: 'PUT',
       body: JSON.stringify(reviewData),
     });
   },
 
   async deleteReview(id) {
-    return apiFetch(`/api/comments/${id}`, {
+    return apiFetch(`/api/reviews/${id}`, {
       method: 'DELETE',
     });
   },
 
-
-  // Newsletter
-  async subscribeToNewsletter(email) {
-    return apiFetch('/api/newsletters', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    });
-  },
 
   // Bruger
   async getUser(id) {
@@ -138,8 +118,13 @@ export const apiService = {
     });
   },
 
-  // henter brugerens kommentare
+  // henter brugerens anmeldelser
   async getUserReviews() {
-    return apiFetch('/api/comments');
-  }
+    return apiFetch('/api/reviews/user');
+  },
+
+  // Slides
+  async getSlides() {
+    return apiFetch('/api/slides');
+  },
 }; 
