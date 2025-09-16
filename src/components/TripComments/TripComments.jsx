@@ -5,11 +5,7 @@ import { apiService } from '../../services/apiService';
 import toast from 'react-hot-toast';
 
 
-//! TODO KOMMENTARE SKAL LAVES DER ER BARE TAGET ET SNIPPET
-//TODO
-
-
-export const ProductComments = ({ productId, productName }) => {
+export const TripComments = ({ tripId, productName }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
@@ -21,18 +17,17 @@ export const ProductComments = ({ productId, productName }) => {
   // Fetch comments når component mounts
   useEffect(() => {
     fetchComments();
-  }, [productId]);
+  }, [tripId]);
 
   const fetchComments = async () => {
     try {
       setLoading(true);
-      const reviews = await apiService.getReviewsByProduct(productId);
+      const reviews = await apiService.getReviewsByTrip(tripId);
       
-      // Filter out reviews that are just ratings (have meaningful comments)
       const meaningfulComments = reviews.filter(review => 
         review.comment && 
         review.comment.trim() !== '' && 
-        !review.comment.startsWith('Rated ') // Filter out auto-generated rating comments
+        !review.comment.startsWith('Rated ') 
       );
       
       setComments(meaningfulComments);
@@ -55,11 +50,10 @@ export const ProductComments = ({ productId, productName }) => {
       setSubmittingComment(true);
       
       const reviewData = {
-        // Set a clear title for comments. If the user provided a title, use it, otherwise use a default.
-        title: newComment.substring(0, 50), // Use first 50 chars of comment as title if no explicit title for review
+        title: newComment.substring(0, 50), // jeg bruger de første 50 chars af comment til tiltle
         comment: newComment.trim(),
-        numStars: 5, // Default rating for comments, as the backend requires it
-        productId: parseInt(productId),
+        numStars: 5, // Default rating
+        tripId: parseInt(tripId),
         isActive: true
       };
 
@@ -122,7 +116,7 @@ export const ProductComments = ({ productId, productName }) => {
         )}
       </header>
 
-      {/* Comment Form */}
+      {/*  Form */}
       {showCommentForm && isAuthenticated && (
         <form onSubmit={handleCommentSubmit} className="mb-6 p-4 bg-gray-50 rounded-lg">
           <div className="mb-4">
@@ -172,7 +166,6 @@ export const ProductComments = ({ productId, productName }) => {
         </form>
       )}
 
-      {/* Not logged in message */}
       {!isAuthenticated && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg">
           <p className="text-sm text-blue-700 text-center">
@@ -181,7 +174,7 @@ export const ProductComments = ({ productId, productName }) => {
         </div>
       )}
 
-      {/* Comments List */}
+      {/* Comments  */}
       <div className="space-y-4">
         {comments.length === 0 ? (
           <div className="text-center py-8">
@@ -201,7 +194,7 @@ export const ProductComments = ({ productId, productName }) => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900">
-                      {comment.user?.name || 'Anonym bruger'}
+                      {comment.reviewer?.firstname} {comment.reviewer?.lastname || 'Anonym bruger'}
                     </h4>
                     <div className="flex items-center text-xs text-gray-500">
                       <Calendar className="w-3 h-3 mr-1" />
@@ -209,8 +202,7 @@ export const ProductComments = ({ productId, productName }) => {
                     </div>
                   </div>
                 </div>
-              </header>
-              
+              </header>              
               <div className="ml-11">
                 {comment.title && comment.title !== newComment.substring(0, 50) && (
                   <h5 className="font-medium text-gray-900 mb-2">{comment.title}</h5>

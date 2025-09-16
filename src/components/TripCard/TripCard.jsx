@@ -45,9 +45,9 @@ export const TripCard = ({ trip }) => {
 
   return (
     <Link to={`/find-lift/${trip.id}`} className="block">
-      <article className="relative flex bg-white dark:bg-gray-800 rounded-3xl shadow-md hover:shadow-lg  overflow-hidden group hover:scale-[1.02] transition-transform duration-300 ease-in-out">
+      <article className="relative flex flex-col lg:flex-row bg-white dark:bg-gray-800 rounded-3xl shadow-md hover:shadow-lg  overflow-hidden group hover:scale-[1.02] transition-transform duration-300 ease-in-out">
         {/* venstre - Profil */}
-        <div className="w-1/3 py-6 flex flex-col justify-center items-center border-r border-gray-200 dark:border-gray-600">
+        <div className="w-full lg:w-1/3 py-4 lg:py-6 flex flex-col justify-center items-center border-b lg:border-r lg:border-b-0 border-gray-200 dark:border-gray-600">
           <ProfileCard profileImageUrl={trip.user?.imageUrl || 'https://www.gravatar.com/avatar?d=mp&s=150'} userName={trip.user?.firstname || 'Ukendt Bruger'} userStars={trip.user?.avgStars || 0} />
         </div>
 
@@ -55,11 +55,11 @@ export const TripCard = ({ trip }) => {
         <div className="flex-1 p-4 flex flex-col justify-between">
           
           <header className="p-2">
-          <div className="absolute top-4 right-64 flex space-x-2">
-            {trip.useFerry && <Ship className="w-6 h-7 text-blue-700" title="Inkluderer færge" />}
-            {trip.isElectric && <Zap className="w-6 h-7 text-fav" title="Elektrisk bil" />}
-          </div>
-            <h3 className="text-2xl font-medium text-gray-900 mb-2 dark:text-white">{formatDate(trip.departureDate)}</h3>
+            <div className="flex items-center mb-2">
+              <h3 className="text-2xl font-medium text-gray-900 dark:text-white mr-4">{formatDate(trip.departureDate)}</h3>
+              {trip.useFerry && <Ship className="w-6 h-7 text-blue-700 mr-2" title="Inkluderer færge" />} 
+              {trip.isElectric && <Zap className="w-6 h-7 text-fav" title="Elektrisk bil" />} 
+            </div>
             <p className="text-gray-900 text-lg mb-2 dark:text-gray-300 flex">
               <Circle className="flex-shrink-0 w-6 h-6 mr-4 mt-2 text-secondary" />
                <span><b className="font-semibold">{trip.cityDeparture}</b> <br /> {trip.addressDeparture}</span>
@@ -74,12 +74,12 @@ export const TripCard = ({ trip }) => {
         </div>
 
         {/* højre - Pris og sæder */}
-        <div className="w-1/4  flex flex-col justify-evenly items-center border-b border-l border-gray-200 dark:border-gray-600">
+        <div className="w-full lg:w-1/4 flex flex-col justify-evenly items-center border-t lg:border-l lg:border-t-0 border-gray-200 dark:border-gray-600 py-4 lg:py-6">
           <div className="text-center">
             <div className="text-2xl font-semibold text-gray-900 dark:text-white">DKK {trip.pricePerSeat}</div>
           </div>
 
-          <div className="flex space-x-1.5 w-full -mx-4 -px-4 justify-center border-t border-gray-200 dark:border-gray-600 pt-10">
+          <div className="flex space-x-1.5 w-full justify-center pt-2">
             {seatDots}
           </div>
         </div>

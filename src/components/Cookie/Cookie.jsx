@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ReactGA from 'react-ga4';
+import { CookieIcon } from 'lucide-react'
 
 export const Cookie = ({ onCookieChoice }) => {
     const handleAcceptCookies = () => {
@@ -24,7 +25,7 @@ export const Cookie = ({ onCookieChoice }) => {
     };
 
     return(<section className="fixed max-w-md p-4 mx-auto bg-white border border-gray-200 dark:bg-gray-800 left-12 bottom-16 dark:border-gray-700 rounded-2xl">
-        <h2 className="font-semibold text-gray-800 dark:text-white">🍪 Vi bruger cookies!</h2>
+        <h2 className="font-semibold text-gray-800 dark:text-white"> <CookieIcon className="text-secondary relative top-1 left-96"/> Vi bruger cookies!</h2>
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Hej, denne hjemmeside bruger essentielle cookies for at sikre dens korrekte funktion og tracking-cookies for at forstå, hvordan du interagerer med den. Sidstnævnte vil kun blive sat efter samtykke.{" "}
             <Link to={"/cookie-policy"} className="font-medium text-gray-700 underline transition-colors duration-300 dark:hover:text-blue-400 dark:text-white hover:text-blue-500">

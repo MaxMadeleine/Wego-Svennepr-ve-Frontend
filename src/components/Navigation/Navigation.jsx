@@ -62,7 +62,7 @@ export const Navigation = () => {
                     </span>
                     <User className="w-5 h-5" />
                   </Link>
-                  <button onClick={handleLogout} className="text-sm font-medium text-foreground/50 hover:text-secondary dark:text-gray-300 dark:hover:text-secondary transition-colors duration-200 border border-secondary px-3 py-1 rounded-md">Log ud</button>
+                  <button onClick={handleLogout} className="text-sm bg-primary font-medium text-white transition-colors duration-200 border px-3 py-3 rounded-2xl">Log ud</button>
                 </div>
               ) : (
                 <div className="relative flex items-center space-x-4">
@@ -73,7 +73,7 @@ export const Navigation = () => {
                     <span className="text-sm font-medium">Log Ind</span>
                     <User className="w-5 h-5" />
                   </Link>
-                  <Link to="/register" className="text-sm font-medium text-foreground/50 hover:text-secondary dark:text-gray-300 dark:hover:text-secondary transition-colors duration-200 border border-secondary px-3 py-1 rounded-md">Opret Konto</Link>
+                  <Link to="/register" className="text-sm bg-primary font-medium text-white transition-colors duration-200 border px-3 py-3 rounded-2xl">Opret Konto</Link>
                 </div>
               )}
             </div>

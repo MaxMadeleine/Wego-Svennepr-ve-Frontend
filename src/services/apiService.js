@@ -79,6 +79,11 @@ export const apiService = {
     return apiFetch(`/api/reviews/trip/${tripId}`);
   },
 
+  // anmeldelse efter ID
+  async getReview(id) {
+    return apiFetch(`/api/reviews/byId/${id}`);
+  },
+
   async createReview(reviewData) {
     return apiFetch('/api/reviews', {
       method: 'POST',
@@ -121,6 +126,11 @@ export const apiService = {
   // henter brugerens anmeldelser
   async getUserReviews() {
     return apiFetch('/api/reviews/user');
+  },
+
+  // Henter anmeldelser for en specifik bruger
+  async getReviewsByUser(userId) {
+    return apiFetch(`/api/reviews/byUser/${userId}`);
   },
 
   // Slides

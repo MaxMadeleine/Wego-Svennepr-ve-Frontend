@@ -1,44 +1,42 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import FooterImage from "../../assets/images/footer/Footer.svg";
 
 export const Footer = () => {
+  const location = useLocation();
+
   return (
     <footer
       style={{
         backgroundImage: `url(${FooterImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "bottom 20%",
       }}
-      className={`bg-transparent text-white py-8 ${
-        location.pathname === "/" ? "md:fixed bottom-0  w-full" : "relative"
+      className={`bg-transparent pb-4 text-white pt-36 ${
+        location.pathname === "/" ? "fixed bottom-0 w-full" : "relative"
       }`}
     >
-      <div className="px-4 sm:px-6 flex flex-col lg:flex-row justify-between gap-6 lg:gap-24 items-end">
-        {/* Copyright Section */}
-        <div className="text-xs sm:text-sm lg:text-base text-gray-400 font-light mb-2 lg:-mb-5 lg:-pb-5">
+      <div className="mx-auto px-4 sm:px-6 flex justify-between items-end">
+        <div className="text-xs sm:text-sm lg:text-xl text-gray-400 font-light">
           <p>© 2025 WeGo ApS</p>
           <p>Fartstræde 12c, 2. sal, 9000 Aalborg</p>
         </div>
 
-        {/* Information */}
-        <div className="text-xs sm:text-sm text-gray-400  font-light mb-2 lg:-mb-5 lg:-pb-5">
-          <h3 className="text-xl text-transparent sm:text-2xl lg:text-4xl p-8 font-light">
+        <div className="text-xs sm:text-sm lg:text-base text-gray-400 font-light">
+          <h3 className="text-lg text-transparent sm:text-xl lg:text-2xl mb-2 font-light">
             Information
           </h3>
-          <div className="space-y-1 text-xs sm:text-sm lg:text-base text-foreground lg:whitespace-nowrap">
-            <br />
-            <br />
+          <div className="space-y-1">
             <Link
               to="/handelsbetingelser"
-              className="block hover:underline transition-all lg:text-base duration-200 text-gray-400 font-light"
+              className="block hover:underline transition-all duration-200"
             >
               Handelsbetingelser
             </Link>
             <Link
               to="/cookie"
-              className="block hover:underline transition-all duration-200 lg:text-base text-gray-400 font-light"
+              className="block hover:underline transition-all duration-200"
             >
               Cookiepolitik
             </Link>

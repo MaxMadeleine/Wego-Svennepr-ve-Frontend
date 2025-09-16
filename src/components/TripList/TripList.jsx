@@ -110,13 +110,13 @@ export const TripList = () => {
   }
 
   return (
-    <section className=" ">
+    <section>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Næste {trips.length} lift </h2>
      
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1  gap-6">
         {currentProductsForDisplay.length > 0 ? (
           currentProductsForDisplay.map((trip) => (
             <TripCard key={trip.id} trip={trip} />
