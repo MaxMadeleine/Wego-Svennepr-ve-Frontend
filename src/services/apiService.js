@@ -133,8 +133,18 @@ export const apiService = {
     return apiFetch(`/api/reviews/byUser/${userId}`);
   },
 
+  async createBooking(bookingData) {
+    return apiFetch('/api/bookings', {
+      method: 'POST',
+      body: JSON.stringify(bookingData),
+    });
+  },
+
   // Slides
   async getSlides() {
     return apiFetch('/api/slides');
   },
+  async getContent(id) {
+    return apiFetch(`/api/content/${id}`);  
+  }
 }; 

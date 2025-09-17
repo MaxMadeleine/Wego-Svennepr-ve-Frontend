@@ -6,12 +6,9 @@ import ReactPaginate from 'react-paginate';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const TripList = () => {
-  const { totalSeats, selectedPreferences, maxSeats } = useFilter();
+  const { totalSeats, selectedPreferences, fromLocation, toLocation } = useFilter();
   // URLSearchParams bruger jeg til forespørgselsparametre i URL.
   // Det giver mig mulighed for at oprette, læse, opdatere og manipulere parametre i URL'en.
-  const queryParams = new URLSearchParams(location.search);
-  const fromLocation = queryParams.get('from');
-  const toLocation = queryParams.get('to');
 
   const [trips, setTrips] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
@@ -34,33 +31,33 @@ export const TripList = () => {
       const allTrips = await apiService.getTrips(); 
       let filtered = allTrips;
 
-      // Filter fromLocation
       if (fromLocation) {
         filtered = filtered.filter(trip => trip.cityDeparture.toLowerCase().includes(fromLocation.toLowerCase()));
       }
 
-      // Filter toLocation
       if (toLocation) {
         filtered = filtered.filter(trip => trip.cityDestination.toLowerCase().includes(toLocation.toLowerCase()));
       }
-
-      // Filter totalSeats
       filtered = filtered.filter((trip) => Number(trip.seatsTotal) <= totalSeats);
 
       // Filter  selectedPreferences
       if (selectedPreferences && selectedPreferences.length > 0) {
         filtered = filtered.filter((trip) => {
           let matchesAllPreferences = true;
-          // jeg itererer gennem hver præference i selectedPreferences-arrayet.
-          // jeg bruger det til at kontrollere, om hver præference matcher kriterierne for trip.
+          // jeg køre gennem hver præference i selectedPreferences-arrayet
+          // bruger det til at kontrollere, om hver præference matcher trip details
           for (const preference of selectedPreferences) {
+            // Tjekker, om præferencen handler om bagagestørrelse (starter med 'bagSizeId_')
             if (preference.startsWith('bagSizeId_')) {
+              // er bagagestørrelsen et heltal fra præferencen
               const bagSize = parseInt(preference.replace('bagSizeId_', ''));
+              // Hvis turens bagagestørrelse ikke matcher brugerens præference, sættes matchesAllPreferences til false
               if (trip.bagSizeId !== bagSize) {
                 matchesAllPreferences = false;
-                break;
+                break; 
               }
-            } else if (preference === 'hasComfort') {
+            }
+           else if (preference === 'hasComfort') {
               if (!trip.hasComfort) {
                 matchesAllPreferences = false;
                 break;
@@ -94,7 +91,6 @@ export const TripList = () => {
       setTrips(filtered);
     } catch (err) {
       console.error("Fejl ved hentning af ture baseret på filtre:", err);
-      setError('Fejl ved indlæsning af ture.');
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +99,7 @@ export const TripList = () => {
   // Kalder fetchFilteredTrips hver gang value ændres
   useEffect(() => {
     fetchFilteredTrips();
-  }, [totalSeats, selectedPreferences, fromLocation, toLocation, location.search]);
+  }, [totalSeats, selectedPreferences, fromLocation, toLocation]);
 
   if (isLoading) {
     return <div>Indlæser ture...</div>;
@@ -111,7 +107,7 @@ export const TripList = () => {
 
   return (
     <section>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 mt-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Næste {trips.length} lift </h2>
      
       </div>

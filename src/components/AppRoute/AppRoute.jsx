@@ -15,6 +15,7 @@ import { TripPage } from '../../pages/TripPage/TripPage';
 import { TripDetails } from '../TripDetails/TripDetails'; 
 import { TripList } from '../TripList/TripList'; 
 import { TermsOfServicePage } from '../../pages/TermsOfServicePage/TermsOfServicePage';
+import { BookTrip } from '../TripBooking/TripBooking';
 
 export const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ export const AppRoutes = () => {
       <Route path="/find-lift" element={<TripPage />}>
         <Route index element={<TripList />} />
         <Route path=":id" element={<TripDetails />} />
+        <Route path=":id/book-plads" element={<BookTrip />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

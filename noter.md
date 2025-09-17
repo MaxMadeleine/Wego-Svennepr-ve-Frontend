@@ -102,3 +102,7 @@ providers
 
 
 fragment når den intercepter min rect bliver ikke til et html element
+
+map tager en loop-funktion med to parametre:
+Første parameter: Værdien af det aktuelle element i arrayet.
+Anden parameter: Indekset for det aktuelle element i arrayet.

@@ -13,6 +13,7 @@
     "@radix-ui/react-portal": "^1.1.9",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "axios": "^1.7.9",
+    "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
     "lucide-react": "^0.539.0",
     "radix-ui": "^1.4.2",
@@ -25,8 +26,10 @@
     "react-icons": "^5.5.0",
     "react-paginate": "^8.3.0",
     "react-router-dom": "^6.28.0",
+    "react-spinners": "^0.17.0",
     "styled-components": "^6.1.19",
     "swiper": "^11.2.10",
+    "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

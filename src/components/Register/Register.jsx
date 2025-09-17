@@ -10,6 +10,8 @@ export const Register = () => {
     password: "",
     confirmPassword: "",
     description: "",
+    imageUrl: "",
+    refreshToken: "",
   });
 
   // Errors fejl fra validering og register auth-funktioner fra context
@@ -41,7 +43,7 @@ export const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
+    //bruger trim til at cutte whitespace
     if (!formData.name.trim()) {
       newErrors.name = "Navn er påkrævet";
     }
@@ -64,6 +66,14 @@ export const Register = () => {
       newErrors.confirmPassword = "Adgangskoder matcher ikke";
     }
 
+    if (!formData.imageUrl) {
+      newErrors.imageUrl = "Profilbillede URL er påkrævet";
+    }
+
+    if (!formData.description.trim()) {
+      newErrors.description = "Beskrivelse er påkrævet";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -79,20 +89,26 @@ export const Register = () => {
     setIsLoading(true);
 
     try {
+// jeg deler brugerens fulde navn (formData.name) op i fornavn og efternavn ved at bruge split(" ") det opdeler navnet i en array baseret på mellemrum. derefter nameParts[0] tager første ord som fornavn. nameParts.slice(1).join(" ")
+      const nameParts = formData.name.trim().split(" ");
+      const firstname = nameParts[0] || "";
+      const lastname = nameParts.slice(1).join(" ") || "";
+
       // Data til backend
       const userData = {
-        name: formData.name,
+        firstname: firstname,
+        lastname: lastname,
         email: formData.email,
         password: formData.password,
         description: formData.description || "",
-        image: "",
-        refreshToken: "",
+        imageUrl: formData.imageUrl || "",
+        refreshToken: formData.refreshToken || "",
         isActive: true,
       };
 
       // Forsøg at registrere bruger
       await register(userData);
-      navigate("/login"); // Redirect til login efter vellykket registrering
+      navigate("/find-lift"); // Redirect til login efter vellykket registrering
     } catch (err) {
       console.error("Registrering fejl:", err);
       // Fejl håndteres allerede i AuthContext
@@ -102,9 +118,9 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white-500 p-5">
+    <div className="min-h-screen flex items-center mt-32 justify-center bg-white-500">
       <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-md animate-fade-in">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+        <h2 className="text-3xl font-bold text-black  mb-2 text-center">
           Opret konto
         </h2>
         <p className="text-gray-600 text-center mb-8">Tilslut dig i dag</p>
@@ -231,6 +247,33 @@ export const Register = () => {
 
           <div>
             <label
+              htmlFor="imageUrl"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Profilbillede URL
+            </label>
+            <input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              autoComplete="photo"
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                errors.imageUrl
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 focus:border-blue-500"
+              }`}
+              placeholder="Indtast URL til dit profilbillede"
+              disabled={isLoading}
+            />
+            {errors.imageUrl && (
+              <span className="text-red-600 text-sm mt-1">{errors.imageUrl}</span>
+            )}
+          </div>
+
+          <div>
+            <label
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
@@ -250,7 +293,7 @@ export const Register = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-l from-black to-grey-700 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -264,16 +307,17 @@ export const Register = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-gray-600">
-            Har du allerede en konto?{" "}
+        <div className="mt-8 text-center flex justify-center">
+          <p className="text-gray-600 mr-2">
+            Har du allerede en konto? 
+            </p>
             <Link
               to="/login"
-              className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
+              className="text-primary font-medium flex-shrink-1  hover:text-primary transition-colors"
             >
-              Log ind
+              <p className="animate-bounce"> Log ind</p>
             </Link>
-          </p>
+          
         </div>
       </div>
     </div>

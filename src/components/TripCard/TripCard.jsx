@@ -2,46 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Ship, Zap, Circle } from 'lucide-react';
 import { ProfileCard } from '../ProfileCard/ProfileCard';
-
-
-//! TODO MANGLER ORDENLIG RESPONSIVITET 
-//TODO
-
+import { formatDate } from '../../lib/utils';
 
 export const TripCard = ({ trip }) => {
-  // funktion til at formatere datoen for turens afgang
-  // vis datoen er i dag vises "I dag" og tidspunktet
-  // vis datoen er i morgen vises "I morgen" og tidspunktet. ellers vises datoen i formatet "dag måned år" 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const time = date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
-
-    if (date.toDateString() === today.toDateString()) {
-      return `I dag ${time}`;
-    } else if (date.toDateString() === tomorrow.toDateString()) {
-      return `I morgen ${time}`;
-    } else {
-      return date.toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
-    }
-  };
 
   const availableSeats = trip.seatsTotal - trip.seatsBooked;
-
-
-
-// jeg opretter en array med længden seatsTotal.    fill(null) fylder arrayen med null-values, så den kan loopes/mappes over.     map((_, index) bruger jeg til at køre over hvert element i arrayen for at labe prikker index er det position, og bruges til at bestemme, om sædet er ledigt grøn prik ellers rød 
+  // Jeg laver en array med længden seatsTotal. fill(null) fylder arrayen med null-værdier, så den kan mappes over. map((_, index) bruger jeg til at loope over hvert element i arrayen, hvor index er sædets position.
   const seatDots = Array(trip.seatsTotal).fill(null).map((_, index) => (
-    <div
-      key={index}
-      className={`w-4 h-4 rounded-full ${
-        index < availableSeats ? 'bg-green-500' : 'bg-red-500'
-      }`}
-    />
-  ));
+      <div
+        key={index}
+        className={`w-4 h-4 rounded-full ${
+          index < availableSeats ? 'bg-green-500' : 'bg-red-500'
+        }`}
+      />
+    ));
 
   return (
     <Link to={`/find-lift/${trip.id}`} className="block">

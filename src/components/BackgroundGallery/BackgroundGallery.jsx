@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiService } from '../../services/apiService';
+import { ClipLoader } from 'react-spinners';
+
 
 const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.VITE_API_URL;
 
 export const BackgroundGallery = ({ isContained = false }) => {
   const [slides, setSlides] = useState([]);
-  const [loading, setLoading] = useState(true); // Initialiser loading til true, da vi henter data fra API'en
+  const [loading, setLoading] = useState(true); // Initialiser loading til true, da jeg henter data fra API'en
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -32,13 +34,13 @@ export const BackgroundGallery = ({ isContained = false }) => {
     }
     // Tjekker før intervallet oprettes
     if (slides.length > 1) {
-      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 7. sekund
+      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 3. sekund
       const interval = setInterval(() => {
         // Skifter til næste slide. Hvis det er den sidste slide, går den tilbage til den første
         setCurrentSlideIndex((prevIndex) =>
           prevIndex === slides.length - 1 ? 0 : prevIndex + 1
         );
-      }, 7000);
+      }, 3000);
 
       // Rydder intervallet, når komponenten afmonteres eller slides.length ændres
       return () => clearInterval(interval);
@@ -46,11 +48,8 @@ export const BackgroundGallery = ({ isContained = false }) => {
   }, [slides.length, loading]); // kører igen når antallet af slides ændres eller loading-tilstand ændres
 
   if (loading) {
-    return (
-      <span className={`${isContained ? 'absolute' : 'fixed'} inset-0 bg-gray-900 flex items-center justify-center z-0`}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-      </span>
-    );
+    return  <ClipLoader size={50} color="secondary" />
+
   }
 
   if (error) {

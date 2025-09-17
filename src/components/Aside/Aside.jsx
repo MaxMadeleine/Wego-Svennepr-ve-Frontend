@@ -40,7 +40,7 @@ export const FilterSideBar = () => {
     };
 
     return (
-        <aside className="w-full h-fit lg:w-64 p-4 bg-white rounded-lg shadow-md mb-8 lg:mb-0">
+        <aside className="w-full h-fit lg:w-64 p-4 bg-white rounded-lg shadow-md mb-8 mt-6 lg:mb-0">
             <div className="mb-5">
                 <label htmlFor="total-seats-range" className="block text-lg font-medium text-gray-900 dark:text-white">Antal sæder: {totalSeats}</label>
                 <input
@@ -64,9 +64,9 @@ export const FilterSideBar = () => {
                   <button
                     key={option.id}
                     onClick={() => togglePreference(`bagSizeId_${option.value}`)}
-                    className={`flex flex-col items-center justify-center p-2 rounded-md text-sm transition-colors duration-200 ${isPreferenceActive(`bagSizeId_${option.value}`) ? 'bg-blue-500 text-gray-400' : ' text-gray-900 hover:bg-gray-200'}`}
+                    className={`flex flex-col items-center justify-center p-2 rounded-md text-sm transition-colors duration-200 ${isPreferenceActive(`bagSizeId_${option.value}`) ? 'bg-secondary text-white' : ' text-gray-900 hover:bg-gray-200'}`}
                   >
-                    <span className="text-3xl text-gray-400">{option.icon}</span>
+                    <span className={`text-3xl ${isPreferenceActive(`bagSizeId_${option.value}`) ? 'text-white' : 'text-gray-400'}`}> {option.icon} </span>
                     {option.name}
                   </button>
                 ))}
@@ -115,10 +115,12 @@ export const FilterSideBar = () => {
 
             <button
               onClick={handleResetFilters}
-              className="w-full bg-secondary text-white text-xl py-4 px-4 font-semibold rounded-full hover:bg-primary transition-colors duration-200"
+              className="w-full bg-secondary hover:bg-gradient-to-tr transform hover:scale-[1.02] from-primary to-secondary text-white text-xl py-4 px-4 font-semibold rounded-full hover:bg-primary transition duration-300"
             >
               Nulstil
             </button>
         </aside>
+
+
     )
 }

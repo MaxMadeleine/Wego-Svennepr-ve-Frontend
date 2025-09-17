@@ -7,6 +7,7 @@ const fullConfig = resolveConfig(tailwindConfig);
 export const PageWrapper = styled.div`
   min-height: 100vh;
   padding: 3rem 1.5rem;
+  margin-top: 10rem;
   background: #fafafa;
   color: #222;
   font-family: system-ui, sans-serif;

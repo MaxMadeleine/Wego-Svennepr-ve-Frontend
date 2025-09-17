@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiService } from "../services/apiService";
+import { useLocation } from "react-router-dom";
 
 const FilterContext = createContext();
 
@@ -7,8 +8,11 @@ export const FilterContextProvider = ({ children }) => {
   const [totalSeats, setTotalSeats] = useState(1); 
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [maxSeats, setMaxSeats] = useState(1); 
-  const [fromLocation, setFromLocation] = useState(""); // State for afgangslokation
-  const [toLocation, setToLocation] = useState(""); // State for destinationslokation
+  const location = useLocation();
+  // jeg bruger URLSearchParams for at sikre, at mit komponent altid har den korrekte state der matcher url/query parametre. Det gør det muligt at filtre dynamisk på ændringer og holde det synkroniseret
+  // location search indholder qurry parameter fra tripfilter. new URLSearchParams(location.search) opretter et objekt, der gør det nemt at hente værdier fra query-parametrene. || er til fallback
+  const [fromLocation, setFromLocation] = useState(new URLSearchParams(location.search).get('from') || ''); 
+  const [toLocation, setToLocation] = useState(new URLSearchParams(location.search).get('to') || ''); 
 
   // useEffect til at hente antal sæder fra alle trips ved render
   useEffect(() => {
@@ -29,6 +33,14 @@ export const FilterContextProvider = ({ children }) => {
     fetchMaxSeats();
   }, []); 
 
+  // til at sync state med ulr query parametre
+  useEffect(() => {
+    const newQueryParams = new URLSearchParams(location.search);
+    //ver gang URLSearchParams bliver opdateret gemmer den verdien i state
+    setFromLocation(newQueryParams.get('from') || '');
+    setToLocation(newQueryParams.get('to') || '');
+  }, [location.search]); // køre ver gang lokation.search ændre sig
+
   //for at tilføje eller fjerne en præference fra listen
   const togglePreference = (preferenceName) => { 
     setSelectedPreferences((prev) =>
@@ -40,14 +52,6 @@ export const FilterContextProvider = ({ children }) => {
     );
   };
 
-  const resetPreferences = () => {
-    setSelectedPreferences([]);
-  };
-  
-  const resetLocationFilters = () => { 
-    setFromLocation("");
-    setToLocation("");
-  };
 
   const resetAllFilters = () => { 
     setTotalSeats(maxSeats); // til max ledige sæder
@@ -62,12 +66,10 @@ export const FilterContextProvider = ({ children }) => {
     selectedPreferences,
     togglePreference,
     maxSeats,
-    resetPreferences,
     fromLocation,
     setFromLocation,
     toLocation,
     setToLocation,
-    resetLocationFilters,
     resetAllFilters,
   };
 

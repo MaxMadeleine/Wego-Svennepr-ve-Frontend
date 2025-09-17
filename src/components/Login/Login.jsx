@@ -40,7 +40,7 @@ export const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
+//bruger trim til at cutte whitespace
     if (!formData.email.trim()) {
       newErrors.email = "Email er påkrævet";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -70,7 +70,7 @@ export const Login = () => {
 
     try {
       await login(formData.email, formData.password);
-      navigate("/profile"); // Redirect til profil efter vellykket login
+      navigate("/find-lift"); // Redirect til profil efter vellykket login
     } catch (err) {
       console.error("Login fejl:", err);
       // Fejl håndteres allerede i AuthContext
@@ -82,7 +82,7 @@ export const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white-500">
       <div className="bg-white rounded-xl shadow-2xl p-10 w-full max-w-md animate-fade-in">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+        <h2 className="text-3xl font-bold text-black  mb-2 text-center">
           Velkommen tilbage
         </h2>
         <p className="text-gray-600 text-center mb-8">Log ind på din konto</p>
@@ -153,7 +153,7 @@ export const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-black to-gray-500 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -167,16 +167,18 @@ export const Login = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-gray-600">
-            Har du ikke en konto?{" "}
+        <div className="mt-8 text-center flex justify-center">
+          <p className="text-gray-600 mr-2">
+            Har du ikke en konto? 
+            </p>
             <Link
               to="/register"
-              className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
+              className="text-primary font-medium flex-shrink-1  hover:text-primary transition-colors"
             >
-              Opret en
+              <p className="animate-bounce"> Opret her</p>
+              
             </Link>
-          </p>
+          
         </div>
       </div>
     </div>
