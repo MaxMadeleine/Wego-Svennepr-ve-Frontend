@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 export const Login = () => {
   // State til at gemme brugerens input i loginformularen
@@ -70,6 +71,7 @@ export const Login = () => {
 
     try {
       await login(formData.email, formData.password);
+      toast.success("Du er nu logget ind!");
       navigate("/find-lift"); // Redirect til profil efter vellykket login
     } catch (err) {
       console.error("Login fejl:", err);

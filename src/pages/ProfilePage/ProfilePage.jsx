@@ -1,57 +1,46 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
-
-//TODO SKAL LAVES
-
 export const ProfilePage = () => {
-  const location = useLocation(); 
+  const location = useLocation();
+
+  const links = [
+    { to: "/profil/min-profil", label: "Min Profil" },
+    { to: "/profil/mine-annoncer", label: "Mine Bookinger" },
+    { to: "/profil/mine-anmeldelser", label: "Mine Anmeldelser" },
+  ];
+
+  const isActive = (path) =>
+    //path skal være == url :D og && siger og der er true du er her /profil 
+    location.pathname === path ||
+    (path === "/profil/min-profil" && location.pathname === "/profil");
 
   return (
-    <section className="min-h-screen mt-40">
-      <nav className="flex flex-wrap justify-center bg-white dark:bg-gray-900 shadow-md mb-8">
-        <Link
-          className={`py-3 px-6 text-center text-lg font-medium transition-colors duration-200 border-b-2 ${
-            location.pathname === "/profil" || location.pathname === "/profil/min-profil" // til både/profile og /profile/
-            ? "text-blue-600 border-blue-600 dark:text-blue-400 dark:border-blue-400" 
-            : "text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-600 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:border-blue-400"
-          }`}
-          to="/profil/min-profil"
-        >
-          Min Profil
-        </Link>
-        <Link
-          className={`py-3 px-6 text-center text-lg font-medium transition-colors duration-200 border-b-2 ${
-            location.pathname === "/profil/mine-annoncer"
-              ? "text-blue-600 border-blue-600 dark:text-blue-400 dark:border-blue-400" 
-              : "text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-600 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:border-blue-400"
-          }`}
-          to="/profil/mine-annoncer"
-        >
-          Mine Annoncer
-        </Link>
-        <Link
-          className={`py-3 px-6 text-center text-lg font-medium transition-colors duration-200 border-b-2 ${
-            location.pathname === "/profil/mine-kommentarer"
-              ? "text-blue-600 border-blue-600 dark:text-blue-400 dark:border-blue-400" 
-              : "text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-600 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:border-blue-400"
-          }`}
-          to="/profil/mine-kommentarer"
-        >
-          Mine Kommentarer
-        </Link>
-        <Link
-          className={`py-3 px-6 text-center text-lg font-medium transition-colors duration-200 border-b-2 ${
-            location.pathname === "/profil/mine-anmeldelser"
-              ? "text-blue-600 border-blue-600 dark:text-blue-400 dark:border-blue-400" 
-              : "text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-600 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:border-blue-400"
-          }`}
-          to="/profil/mine-anmeldelser"
-        >
-          Mine Anmeldelser
-        </Link>
+    <section className="w-full bg-white dark:bg-gray-950 shadow-md mt-0.5 sticky top-0 z-10">
+      <nav className="w-full dark:bg-gray-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 py-4">
+            {links.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-6 py-3 rounded-lg text-base font-medium transition-colors ${
+                  isActive(link.to)
+                    ? "bg-gradient-to-tr from-primary to-secondary text-white"
+                    : "bg-secondary text-white hover:bg-gradient-to-tr hover:from-primary hover:to-secondary "
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </nav>
-      <Outlet />
+
+      {/* Siderne */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+        <Outlet />
+      </div>
     </section>
   );
-}; 
+};

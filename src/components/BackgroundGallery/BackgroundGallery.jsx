@@ -34,13 +34,13 @@ export const BackgroundGallery = ({ isContained = false }) => {
     }
     // Tjekker før intervallet oprettes
     if (slides.length > 1) {
-      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 3. sekund
+      // Opretter et interval, der opdaterer 'currentSlideIndex' hvert 5. sekund
       const interval = setInterval(() => {
         // Skifter til næste slide. Hvis det er den sidste slide, går den tilbage til den første
         setCurrentSlideIndex((prevIndex) =>
           prevIndex === slides.length - 1 ? 0 : prevIndex + 1
         );
-      }, 3000);
+      }, 5000);
 
       // Rydder intervallet, når komponenten afmonteres eller slides.length ændres
       return () => clearInterval(interval);
@@ -66,7 +66,7 @@ export const BackgroundGallery = ({ isContained = false }) => {
         {slides.map((slide, index) => (
           <div
             key={slide.id || index}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
+            className={`absolute inset-0 mb-20 bg-cover bg-center transition-opacity duration-1000 ${
               index === currentSlideIndex ? 'opacity-100' : 'opacity-0'
             }`}
             style={{

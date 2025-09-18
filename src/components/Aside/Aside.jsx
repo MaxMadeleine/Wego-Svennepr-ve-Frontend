@@ -14,7 +14,7 @@ export const FilterSideBar = () => {
             resetAllFilters
          } = useFilter()
 
-    // det var nemmer at skrive dem end at fetche og det er aligevel et statisk input fra usern
+    // Det var nemmere at skrive dem end at hente, og det er alligevel et statisk input fra brugeren.
     const bagSizeOptions = [
       { id: 1, name: 'Lille', icon: <LiaShoppingBagSolid />, value: 1 },
       { id: 2, name: 'Mellem', icon: <MdOutlineLuggage />, value: 2 },
@@ -77,7 +77,7 @@ export const FilterSideBar = () => {
                 <h3 className="block text-lg font-medium text-gray-900 dark:text-white mb-2">Komfort</h3>
                 <div className="mt-2 space-y-2">
                   {comfortOptions.map((option) => (
-                    // value er unikt ud fra vært ver muglighed
+                    // `value` er unikt for hver mulighed.
                       <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                           <input
                               type="checkbox"
@@ -97,7 +97,7 @@ export const FilterSideBar = () => {
                 <h3 className="block text-lg font-medium text-gray-900 dark:text-white mb-2">Præferencer</h3>
                 <div className="mt-2 space-y-2">
                   {preferenceOptions.map((option) => (
-                     // value er unikt ud fra vært ver muglighed
+                     // `value` er unikt for hver mulighed.
                       <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                           <input
                               type="checkbox"

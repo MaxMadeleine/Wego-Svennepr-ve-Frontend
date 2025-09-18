@@ -124,8 +124,12 @@ export const apiService = {
   },
 
   // henter brugerens anmeldelser
-  async getUserReviews() {
-    return apiFetch('/api/reviews/user');
+  async getUserReviews(userId) {
+    return apiFetch(`/api/reviews/byUser/${userId}`);
+  },
+
+  async getMyWrittenReviews() {
+    return apiFetch('/api/reviews');
   },
 
   // Henter anmeldelser for en specifik bruger
@@ -138,6 +142,16 @@ export const apiService = {
       method: 'POST',
       body: JSON.stringify(bookingData),
     });
+  },
+
+  async deleteBooking(id) {
+    return apiFetch(`/api/bookings/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async getBookingsByUser() {
+    return apiFetch(`/api/bookings/byUser`);
   },
 
   // Slides

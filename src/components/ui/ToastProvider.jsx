@@ -20,12 +20,11 @@ export const ToastProvider = ({ children }) => {
           },
           success: {
             style: {
-              background: '#059669',
-              border: '1px solid #10b981',
+              background: '#00A6DB',
             },
             iconTheme: {
               primary: '#fff',
-              secondary: '#059669',
+              secondary: '#09366D',
             },
           },
           error: {

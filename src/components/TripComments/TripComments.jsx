@@ -14,7 +14,7 @@ export const TripComments = ({ tripId, productName }) => {
   
   const { isAuthenticated, user } = useAuth();
 
-  // Fetch comments når component mounts
+  // Henter kommentarer, når komponenten monteres
   useEffect(() => {
     fetchComments();
   }, [tripId]);
@@ -50,7 +50,7 @@ export const TripComments = ({ tripId, productName }) => {
       setSubmittingComment(true);
       
       const reviewData = {
-        title: newComment.substring(0, 50), // jeg bruger de første 50 chars af comment til tiltle
+        title: newComment.substring(0, 50), // Bruger de første 50 tegn af kommentaren som titel
         comment: newComment.trim(),
         numStars: 5, // Default rating
         tripId: parseInt(tripId),
@@ -63,7 +63,7 @@ export const TripComments = ({ tripId, productName }) => {
       setNewComment('');
       setShowCommentForm(false);
       
-      // Refresh comments
+      // Opdaterer kommentarer
       await fetchComments();
     } catch (error) {
       console.error('Error submitting comment:', error);

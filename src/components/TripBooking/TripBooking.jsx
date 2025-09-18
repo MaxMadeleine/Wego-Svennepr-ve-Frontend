@@ -40,7 +40,7 @@ export const BookTrip = () => {
   const onSubmit = async (data) => {
     if (!user || !user.id) {
       toast.error("Du skal være logget ind for at booke en tur.");
-      return;
+      return; // returnerer her så booking ikke fortsætter
     }
 
     try {

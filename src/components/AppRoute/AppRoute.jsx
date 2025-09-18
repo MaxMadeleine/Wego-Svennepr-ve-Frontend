@@ -3,10 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import { SplashPage } from '../../pages/SplashPage/SplashPage';
 import { LoginPage } from '../../pages/LoginPage/LoginPage';
 import { RegisterPage } from '../../pages/RegisterPage/RegisterPage';
-import { ProfilePage } from '../../pages/ProfilePage/ProfilePage';
 import { MyProfile } from '../MyProfile/MyProfile.jsx';
-import { MyTrips } from '../../components/MyPosts/MyPosts.jsx';
-import { MyComments } from '../../components/MyComments/MyComments.jsx';
+import { MyBookings } from '../MyBookings/MyBookings.jsx';
 import { MyReviews } from '../../components/MyReviews/MyReviews.jsx';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.jsx';
 import { CookiePage } from '../../pages/CookiePage/CookiePage.jsx';
@@ -33,11 +31,10 @@ export const AppRoutes = () => {
       <Route path="/handelsbetingelser" element={<TermsOfServicePage />} />
       
       <Route element={<ProtectedRoute />}>
-        <Route path="/profil" element={<ProfilePage />}>
+        <Route path="/profil">
           <Route index element={<MyProfile />} />
           <Route path="min-profil" element={<MyProfile />} />
-          <Route path="mine-annoncer" element={<MyTrips />} />
-          <Route path="mine-kommentarer" element={<MyComments />} />
+          <Route path="mine-annoncer" element={<MyBookings />} />
           <Route path="mine-anmeldelser" element={<MyReviews />} />
         </Route>
       </Route>

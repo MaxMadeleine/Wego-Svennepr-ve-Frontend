@@ -59,7 +59,7 @@ export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialRevie
       setNewReviewComment('');
       setNewReviewRating(0);
       setShowReviewForm(false);
-      fetchReviewsForTrip(); // Refresh listen 
+      fetchReviewsForTrip(); // updaterer listen.
     } catch (error) {
       console.error('Error submitting review:', error);
       toast.error('Kunne ikke tilføje anmeldelse');

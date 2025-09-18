@@ -35,7 +35,7 @@ export const Navigation = () => {
     // Så er den ikke sticky der hvor der er til og fra filter
     <nav
       className={`bg-white dark:bg-gray-950 ${
-        location.pathname.startsWith("/find-lift")
+        location.pathname.startsWith("/find-lift") || location.pathname.startsWith("/profil")
           ? "relative"
           : "fixed top-0 left-0 right-0"
       } z-50`}
