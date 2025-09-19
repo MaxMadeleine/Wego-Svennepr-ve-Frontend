@@ -34,8 +34,8 @@ export const AppRoutes = () => {
         <Route path="/profil">
           <Route index element={<MyProfile />} />
           <Route path="min-profil" element={<MyProfile />} />
-          <Route path="mine-annoncer" element={<MyBookings />} />
-          <Route path="mine-anmeldelser" element={<MyReviews />} />
+          <Route path="mine-bookinger" element={<MyBookings />} />
+          <Route path="mine-reviews" element={<MyReviews />} />
         </Route>
       </Route>
 

@@ -4,15 +4,20 @@ import { useAuth } from '../../contexts/AuthContext';
 import { ProfileCard } from '../ProfileCard/ProfileCard';
 import { Star, MessageCircle, Send, User } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { StarRating } from '../StarRating/StarRating';
+import { formatDate } from '@/lib/utils';
 
 export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialReviews }) => {
+
   const { isAuthenticated, user } = useAuth();
-  const [reviews, setReviews] = useState(initialReviews || []);
   const [newReviewComment, setNewReviewComment] = useState('');
   const [newReviewRating, setNewReviewRating] = useState(0);
   const [submittingReview, setSubmittingReview] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [loadingReviews, setLoadingReviews] = useState(false);
+
+  const [reviews, setReviews] = useState(initialReviews || []);
+
 
   useEffect(() => {
     // hvis initialReviews ikke er der fetch jeg dem
@@ -25,10 +30,7 @@ export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialRevie
     setLoadingReviews(true);
     try {
       const fetchedReviews = await apiService.getReviewsByUser(driverId);
-      const meaningfulReviews = fetchedReviews.filter(review =>
-        review.comment && review.comment.trim() !== '' && !review.comment.startsWith('Rated ')
-      );
-      setReviews(meaningfulReviews);
+      setReviews(fetchedReviews);
     } catch (error) {
       console.error('Error fetching reviews:', error);
       toast.error('Kunne ikke hente anmeldelser for turen');
@@ -68,39 +70,16 @@ export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialRevie
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('da-DK', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }) + ' kl. ' + date.toLocaleTimeString('da-DK', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const driverAvgStars = driver?.avgStars || 0;
-  const driverNumReviews = driver?.numReviews || 0;
-
   return (
     <div>
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Chaufføren:</h2>
         
             <ProfileCard
-              profileImageUrl={driver?.imageUrl}
-              userName={driver ? `${driver.firstname} ${driver.lastname}` : 'Ukendt Chauffør'}
-              userStars={driverAvgStars}
+              driver={driver}
               onClickStars={isAuthenticated && !showReviewForm ? setNewReviewRating : undefined}
               layout="horizontal"
-              memberSince={driver?.createdAt ? `Medlem siden ${new Date(driver.createdAt).toLocaleDateString('da-DK', { year: 'numeric', month: 'long' })}` : 'juli 2014'}
-              numReviews={driverNumReviews}
-              isAuthenticated={isAuthenticated}
-              user={user}
-              driverId={driverId}
-              showReviewForm={showReviewForm}
-              setShowReviewForm={setShowReviewForm}
+              onWriteReview={isAuthenticated && user?.id !== driverId ? () => setShowReviewForm(!showReviewForm) : undefined}
             />
             
           </div>
@@ -124,15 +103,7 @@ export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialRevie
               <div className="mb-4">
                 <span className="block text-sm font-medium text-gray-700 mb-2">Din rating:</span>
                 <div className="flex space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`w-6 h-6 cursor-pointer ${
-                        star <= newReviewRating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                      }`}
-                      onClick={() => setNewReviewRating(star)}
-                    />
-                  ))}
+                  <StarRating rating={newReviewRating} onClick={setNewReviewRating} starSize={6} />
                 </div>
               </div>
               <div className="flex justify-end space-x-2">
@@ -203,18 +174,11 @@ export const ProfileReviews = ({ tripId, driverId, driver, reviews: initialRevie
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-1">
                   <h4 className="font-medium text-gray-900 text-sm">
-                  {review.reviewer?.firstname} {review.reviewer?.lastname ? review.reviewer.lastname.charAt(0) : ''}.
+                  {review.reviewer?.firstname ||  'U'} {review.reviewer?.lastname }
  
                   </h4>
                   <div className="flex items-center space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-3 h-3 ${
-                          star <= review.numStars ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
+                    <StarRating rating={review.numStars} starSize={3} />
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mb-0.5">

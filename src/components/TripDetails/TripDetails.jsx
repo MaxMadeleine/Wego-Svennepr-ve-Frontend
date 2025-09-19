@@ -82,7 +82,7 @@ export const TripDetails = () => {
 
               {/* detaljer */}
               <section>
-                <h2 className="text-lg font-semibold text-gray-800 mb-3">Detaljer</h2>
+                <h1 className="text-lg font-semibold text-gray-800 mb-3">Detaljer</h1>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-start">
                     <Users className="w-5 h-5 mr-3 mt-1 text-green-600" />

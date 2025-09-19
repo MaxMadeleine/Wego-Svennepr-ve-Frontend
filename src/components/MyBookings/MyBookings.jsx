@@ -23,6 +23,7 @@ export const MyBookings = () => {
   }, [user?.id]);
 
   const loadUserBookings = async () => {
+    // hvis jeg gjorde (!user.id) vil den bare prøve at læse id som er null
     if (!user?.id) return;
 
     setLoadingBookings(true);
@@ -42,9 +43,8 @@ export const MyBookings = () => {
 
     setDeletingBooking(bookingId);
     try {
-      setUserBookings((prev) => prev.filter((b) => b.id !== bookingId)); // opdaterer lokal state for at fjerne trip
+      setUserBookings((prev) => prev.filter((b) => b.id !== bookingId)); // filtrerer bookinger og fjerner den med matching id 
       await apiService.deleteBooking(bookingId); // Sletter trip
-      toast.success('Booking slettet');
     } catch (error) {
       console.error('Fejl ved sletning af booking:', error);
       toast.error('Kunne ikke slette booking');
@@ -55,6 +55,7 @@ export const MyBookings = () => {
     }
   };
 
+  // Tager tripId som argument 
   const handleViewBooking = (tripId) => {
     navigate(`/find-lift/${tripId}`);
   };

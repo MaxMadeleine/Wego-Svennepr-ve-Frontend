@@ -32,6 +32,7 @@ export const TripList = () => {
       let filtered = allTrips;
 
       if (fromLocation) {
+        //trip i filter er vert enkle trip
         filtered = filtered.filter(trip => trip.cityDeparture.toLowerCase().includes(fromLocation.toLowerCase()));
       }
 
@@ -87,7 +88,7 @@ export const TripList = () => {
           return matchesAllPreferences;
         });
       }
-
+        // sidst sætter filtered til trips som jeg mapper under til cards
       setTrips(filtered);
     } catch (err) {
       console.error("Fejl ved hentning af ture baseret på filtre:", err);
@@ -108,11 +109,12 @@ export const TripList = () => {
   return (
     <section>
       <div className="flex justify-between items-center mb-6 mt-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Næste {trips.length} lift </h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Næste {trips.length} lift </h1>
      
       </div>
 
       <div className="grid grid-cols-1  gap-6">
+      {/* der er trips men med pagniation under */}
         {currentProductsForDisplay.length > 0 ? (
           currentProductsForDisplay.map((trip) => (
             <TripCard key={trip.id} trip={trip} />

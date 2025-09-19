@@ -4,25 +4,8 @@ import { apiService } from "../../services/apiService";
 import { Star, Trash2, Edit } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatDate } from '../../lib/utils';
+import { StarRating } from '../StarRating/StarRating';
 
-// Opretter et array med 5 elementer, som kan mappes over.
-// `map` looper indeks 0-4, og `onChange` tager stjernens indeks i arrayet + 1.
-        
-const StarRating = ({ rating, onChange, editable = false }) => (
-  <div className="flex items-center gap-1">
-    {[...Array(5)].map((_, index) => (
-      <Star
-        key={index}
-        onClick={editable ? () => onChange?.(index+ 1) : undefined}
-        className={`w-5 h-5 ${
-          index< rating ? "text-yellow-400" : "text-gray-300"
-        } ${editable ? "cursor-pointer hover:scale-110 transition" : ""}`}
-        fill="currentColor"
-      />
-    ))}
-    <span className="text-gray-600 text-sm ml-2">({rating}/5)</span>
-  </div>
-);
 
 export const MyReviews = () => {
   const { user } = useAuth();
@@ -111,8 +94,9 @@ const deleteReview = async (id) => {
                   <div className="space-y-4">
                     <StarRating
                       rating={form.rating}
-                      onChange={(val) => setForm((f) => ({ ...f, rating: val }))}
-                      editable
+                      onClick={(val) => setForm((f) => ({ ...f, rating: val }))}
+                      starSize={5}
+                      className="mb-2"
                     />
                     <textarea
                       name="comment"
@@ -163,10 +147,10 @@ const deleteReview = async (id) => {
                           </p>
                         </div>
                       </div>
-                      <StarRating rating={r.numStars} />
+                      <StarRating rating={r.numStars} starSize={5} />
                     </div>
 
-                    {/* Comment + actions */}
+                    {/* Comment og actions */}
                     <div className="flex-1 space-y-4">
                       <p className="bg-gray-100 p-4 rounded-xl text-gray-800">
                         {r.comment}

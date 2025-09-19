@@ -28,8 +28,7 @@ export const MyProfile = () => {
   const loadUserData = async () => {
     try {
       const userData = await apiService.getUser(user.id);
-           // initialisering af state
-      // jeg bruger setProfileForm til at opdatere state-variablen profileForm med værdier fra userData.
+      // initialiser state. jeg bruger setProfileForm til at opdatere state-variablen profileForm med værdier fra userData.
       setProfileForm({
         firstname: userData?.firstname || "",
         lastname: userData?.lastname || "",

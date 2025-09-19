@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.DEV
-  ? '' // In development, rely on Vite's proxy, so base URL is relative
+  ? '' // i hosting bruger jeg Vite's proxy da ulr er forskellige
   : import.meta.env.VITE_API_URL ;
 
 // auth-token fra sessionStorage

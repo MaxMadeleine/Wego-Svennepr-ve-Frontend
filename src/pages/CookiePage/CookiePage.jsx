@@ -1,4 +1,3 @@
-// src/pages/CookiePage.jsx
 import React from "react";
 import {
   PageWrapper,

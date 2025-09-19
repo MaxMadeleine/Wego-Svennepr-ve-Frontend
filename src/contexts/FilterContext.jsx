@@ -55,7 +55,7 @@ export const FilterContextProvider = ({ children }) => {
 
   const resetAllFilters = () => { 
     setTotalSeats(maxSeats); // til max ledige sæder
-    setSelectedPreferences([]);
+    setSelectedPreferences([]); // array med prefrenacer
     setFromLocation("");
     setToLocation("");
   };

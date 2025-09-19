@@ -9,7 +9,7 @@ export const TripPage = () => {
 
   return (
     <section className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto px-4 py-8 ">
-      {!isTripDetailsPage && <FilterSideBar />}
+      {!isTripDetailsPage && <FilterSideBar />} 
       <div className="flex-1">
         <Outlet />
       </div>

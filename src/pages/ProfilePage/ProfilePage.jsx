@@ -6,8 +6,8 @@ export const ProfilePage = () => {
 
   const links = [
     { to: "/profil/min-profil", label: "Min Profil" },
-    { to: "/profil/mine-annoncer", label: "Mine Bookinger" },
-    { to: "/profil/mine-anmeldelser", label: "Mine Anmeldelser" },
+    { to: "/profil/mine-bookinger", label: "Mine Bookinger" },
+    { to: "/profil/mine-reviews", label: "Mine Anmeldelser" },
   ];
 
   const isActive = (path) =>

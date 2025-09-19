@@ -42,45 +42,47 @@ export const Navigation = () => {
     >
       <div className="max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center h-20 flex-shrink-0">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex group items-center h-32 w-32 duration-300 transform md:hover:scale-105"
-          >
-            <img
-              className="object-contain h-full w-full"
-              src={logo}
-              alt="Wego Logo"
-            />
-          </Link>
-
-          {/* Desk Navigation ventre */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="flex items-center gap-x-14">
+            {/* Logo */}
             <Link
-              key="Find et lift"
-              to="/find-lift"
-              className={`text-foreground/70 text-base font-light hover:text-secondary transition-colors duration-300 transform md:hover:scale-105 flex items-center justify-center ${
-                location.pathname === "/find-lift"
-                  ? "border-b-2 border-secondary"
-                  : ""
-              }`}
+              to="/"
+              className="flex group items-center h-32 w-32 duration-300 transform md:hover:scale-105"
             >
-              Find et lift
+              <img
+                className="object-contain h-full w-full"
+                src={logo}
+                alt="Wego Logo"
+              />
             </Link>
 
-            <button
-              onClick={handleOpenModal}
-              className={`text-foreground/70 text-base font-light hover:text-secondary transition-colors duration-300 transform md:hover:scale-105 flex items-center justify-center ${
-                location.pathname === "/sadan-virker-det"
-                  ? "border-b-2 border-secondary"
-                  : ""
-              }`}
-            >
-              Sådan virker det
-            </button>
+            {/* Desk Navigation ventre */}
+            <div className="hidden md:flex items-center space-x-8">
+              <Link
+                key="Find et lift"
+                to="/find-lift"
+                className={`text-foreground/70 text-base font-light hover:text-secondary transition-colors duration-300 transform md:hover:scale-105 flex items-center justify-center ${
+                  location.pathname === "/find-lift"
+                    ? "border-b-2 border-secondary"
+                    : ""
+                }`}
+              >
+                Find et lift
+              </Link>
+
+              <button
+                onClick={handleOpenModal}
+                className={`text-foreground/70 text-base font-light hover:text-secondary transition-colors duration-300 transform md:hover:scale-105 flex items-center justify-center ${
+                  location.pathname === "/sadan-virker-det"
+                    ? "border-b-2 border-secondary"
+                    : ""
+                }`}
+              >
+                Sådan virker det
+              </button>
+            </div>
           </div>
 
-          {/* Desk User Info højre */}
+          {/* Desk profil højre */}
           <div className="hidden md:flex items-center gap-x-8">
             <div className="flex items-center gap-x-4">
               {isAuthenticated ? (

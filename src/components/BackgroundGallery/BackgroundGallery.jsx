@@ -65,6 +65,7 @@ export const BackgroundGallery = ({ isContained = false }) => {
       <Link to="/find-lift" className="absolute inset-0 z-10 cursor-pointer">
         {slides.map((slide, index) => (
           <div
+          //Bruger slide.id som key hvis det findes
             key={slide.id || index}
             className={`absolute inset-0 mb-20 bg-cover bg-center transition-opacity duration-1000 ${
               index === currentSlideIndex ? 'opacity-100' : 'opacity-0'

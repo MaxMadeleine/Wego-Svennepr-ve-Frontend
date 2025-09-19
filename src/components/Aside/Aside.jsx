@@ -8,7 +8,8 @@ export const FilterSideBar = () => {
     const {
             totalSeats,
             setTotalSeats,
-            selectedPreferences, 
+            selectedPreferences,
+            // Toogle prefrence modtager prefrence value 
             togglePreference, 
             maxSeats,
             resetAllFilters
@@ -32,7 +33,7 @@ export const FilterSideBar = () => {
       { name: 'Rygning', value: 'allowSmoking' },
     ];
 
-    // value fra provider
+    // isPreferenceActive bruger jeg til at tjekke true/flse og viser ui ud fra det og togglePreference opdaterer provider. 
     const isPreferenceActive = (value) => selectedPreferences.includes(value);
 
     const handleResetFilters = () => {
@@ -40,7 +41,7 @@ export const FilterSideBar = () => {
     };
 
     return (
-        <aside className="w-full h-fit lg:w-64 p-4 bg-white rounded-lg shadow-md mb-8 mt-6 lg:mb-0">
+        <aside className="w-full h-fit lg:w-64 p-4 bg-white rounded-3xl shadow-md mb-8 mt-6 lg:mb-0">
             <div className="mb-5">
                 <label htmlFor="total-seats-range" className="block text-lg font-medium text-gray-900 dark:text-white">Antal sæder: {totalSeats}</label>
                 <input

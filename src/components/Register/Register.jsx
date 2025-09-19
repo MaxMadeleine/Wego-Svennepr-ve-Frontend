@@ -108,7 +108,7 @@ export const Register = () => {
 
       // Forsøg at registrere bruger
       await register(userData);
-      navigate("/find-lift"); // Redirect til login efter vellykket registrering
+      navigate("/login"); // Redirect til login efter vellykket registrering
     } catch (err) {
       console.error("Registrering fejl:", err);
       // Fejl håndteres allerede i AuthContext

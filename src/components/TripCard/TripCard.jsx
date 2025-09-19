@@ -4,6 +4,8 @@ import { MapPin, Ship, Zap, Circle } from 'lucide-react';
 import { ProfileCard } from '../ProfileCard/ProfileCard';
 import { formatDate } from '../../lib/utils';
 
+
+//passer trip med som helt object
 export const TripCard = ({ trip }) => {
 
   const availableSeats = trip.seatsTotal - trip.seatsBooked;
@@ -22,7 +24,8 @@ export const TripCard = ({ trip }) => {
       <article className="relative flex flex-col lg:flex-row bg-white dark:bg-gray-800 rounded-3xl shadow-md hover:shadow-lg  overflow-hidden group hover:scale-[1.02] transition-transform duration-300 ease-in-out">
         {/* venstre - Profil */}
         <div className="w-full lg:w-1/3 py-4 lg:py-6 flex flex-col justify-center items-center border-b lg:border-r lg:border-b-0 border-gray-200 dark:border-gray-600">
-          <ProfileCard profileImageUrl={trip.user?.imageUrl || 'https://www.gravatar.com/avatar?d=mp&s=150'} userName={trip.user?.firstname || 'Ukendt Bruger'} userStars={trip.user?.avgStars || 0} />
+        {/* passer trip.user med fra trip */}
+          <ProfileCard driver={trip.user} />
         </div>
 
         {/* midt - detaljer */}
